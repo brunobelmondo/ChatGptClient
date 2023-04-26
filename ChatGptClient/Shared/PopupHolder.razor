@@ -1,0 +1,64 @@
+﻿@inject IPopupService PopupService
+@implements IDisposable
+
+<style>
+    .block-background {
+        display:block;
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        overflow:auto;
+        background-color: rgba(0,0,0,0.2);
+        z-index: 100;
+    }
+    
+    .popup {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        z-index: 101;
+    }
+</style>
+
+@if (currentPopupStack.Count > 0)
+{
+    foreach (var p in currentPopupStack.Reverse())
+    {
+        @p
+    }
+}
+
+@code {
+    private Stack<RenderFragment> currentPopupStack = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        PopupService.OnPopup += OnPopupEvent;
+        PopupService.OnClose += OnCloseEvent;
+    }
+
+    private void OnCloseEvent()
+    {
+        if (currentPopupStack.Count > 0)
+        {
+            currentPopupStack.Pop();
+            StateHasChanged();
+        }
+    }
+
+    private void OnPopupEvent(RenderFragment fragment)
+    {
+        currentPopupStack.Push(fragment);
+        StateHasChanged();
+    }
+    
+    public void Dispose()
+    {
+        PopupService.OnPopup -= OnPopupEvent;
+        PopupService.OnClose -= OnCloseEvent;
+    }
+}

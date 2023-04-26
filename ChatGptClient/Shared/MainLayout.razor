@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+
+@inject ChatGpt ChatGpt
+@inject IPopupService PopupService
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ChatGpt.LoadKey();
+        if (string.IsNullOrEmpty(ChatGpt.ApiKey))
+        {
+            await ShowApiKeyPopup();
+        }
+    }
+    
+    private async Task ShowApiKeyPopup()
+    {
+        PopupService.Show(popupService => @<ApiKeyPopup OnExit="() => PopupService.Close()"/>);
+    }
+}

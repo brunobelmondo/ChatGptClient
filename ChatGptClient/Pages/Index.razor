@@ -1,0 +1,81 @@
+﻿@page "/"
+@inject IJSRuntime JsRuntime
+@inject ChatGpt ChatGpt
+
+<PageTitle>ChatGpt</PageTitle>
+
+<div class="container">
+    @foreach (var message in session.Messages)
+    {
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @if (message.role == "user")
+                    {
+                        <label for="result">Me:</label>
+                        <SampleTextComponent Text="@message.content"/>
+                    }
+                    else
+                    {
+                        <label for="result">ChatGpt:</label>
+                        <MarkdownComponent MarkdownText="@message.content"/>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    @if (isLoading)
+    {
+        <div class="row mt-3">
+            <LoadingSpinner/>
+        </div>
+    }
+    else
+    {
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <form>
+                    <div class="form-group">
+                        <label for="query">Query:</label>
+                        <textarea class="form-control" id="query" @bind="query" rows="5"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    <div class="row mt-2">
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" @onclick="Ask">Send Query</button>
+            <button type="button" class="btn btn-primary" @onclick="() => session.RemoveLast()">Remove last message</button>
+            <button type="button" class="btn btn-primary" @onclick="() => session.ClearAll()">Clear conversation</button>
+            <button type="button" class="btn btn-primary" @onclick="Download">Download as markdown</button>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    private string? query;
+    [Parameter]public ChatSession session { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        session = ChatGpt.Sessions.First();
+    }
+
+    private async Task Ask()
+    {
+        isLoading = true;
+        await session.Ask(query);
+        query = null;
+        isLoading = false;
+    }
+
+    private bool isLoading = false;
+
+    private async Task Download()
+    {
+        await JsRuntime.InvokeVoidAsync("downloadTextFile", "chat.md", String.Join("\n---\n", session.Messages.Select(m=>m.content)));
+    }
+}
