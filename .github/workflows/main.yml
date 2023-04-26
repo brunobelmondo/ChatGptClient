@@ -1,0 +1,53 @@
+name: Deploy to GitHub Pages
+# Run workflow on every push to the master branch
+on:
+  push:
+    branches: [ master ]
+jobs:
+  deploy-to-github-pages:
+    # use ubuntu-latest image to run steps on
+    runs-on: ubuntu-latest
+    steps:
+      # uses GitHub's checkout action to checkout code form the master branch
+      - uses: actions/checkout@v2
+      # sets up .NET Core SDK 3.1
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.0.3
+        with:
+          dotnet-version: 7.0.x
+      # publishes Blazor project to the release-folder
+      - name: Publish .NET Core Project
+        run: dotnet publish ChatGptClient/ChatGptClient.csproj -c Release -o release --nologo
+      - name: GitHub Pages
+        # You may pin to the exact commit or the version.
+        # uses: crazy-max/ghaction-github-pages@c0d7ff0487ee0415efb7f32dab10ea880330b1dd
+        uses: crazy-max/ghaction-github-pages@v3.1.0
+        with:
+          # GitHub repository where assets will be deployed (default $GITHUB_REPOSITORY)
+          repo: brunobelmondo.github.io
+          # Git branch where assets will be deployed
+          target_branch: master
+          # Create incremental commit instead of doing push force
+          keep_history: true # optional, default is false
+          # Allow an empty commit to be created
+          # allow_empty_commit: # optional, default is true
+          # Build directory to deploy
+          build_dir: release/wwwroot
+          # Whether to treat build_dir as an absolute path
+          # absolute_build_dir: # optional, default is false
+          # If enabled, the content of symbolic links will be copied
+          # follow_symlinks: # optional, default is false
+          # The committer name and email address
+          # committer: # optional
+          # The author name and email address
+          # author: # optional
+          # Commit message
+          # commit_message: # optional
+          # Write the given domain name to the CNAME file
+          # fqdn: # optional
+          # Allow Jekyll to build your site
+          # jekyll: # optional, default is true
+          # If enabled, nothing will be pushed
+          # dry_run: # optional, default is false
+          # Enable verbose output
+          # verbose: # optional, default is false
