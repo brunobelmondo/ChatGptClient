@@ -19,7 +19,7 @@ public class ChatSession
         Messages.Add(new ChatGptMessage(){role="user", content = query});
         var request = new ChatGptRequest
         {
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages = Messages.ToArray(),
             temperature = 0.1 
         };
