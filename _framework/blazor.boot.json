@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "ChatGptClient.dll": "sha256-91IrI8wbS9ZYrsorMJ12GJAxp70b+2rUhBjAdSdA3iM=",
+      "ChatGptClient.dll": "sha256-iUuOIW5CFCrGUAiOhzMfJ\/HjvmNtc37u3YU6DLYulsE=",
       "Markdig.dll": "sha256-iKKz5I0C1crIJpaE817LsfaIGinS7O1szh3CsTyQ8Bc=",
       "Microsoft.AspNetCore.Components.dll": "sha256-gZlW7ejPqTv\/dqpNz1HtusC9G3oovzkNFSORFREqk58=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-PSWW+AMMyYy6ceznG4JFR03IfHljgrVem561PnAjGp4=",
